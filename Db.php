@@ -16,9 +16,13 @@ class DB{
 		return mysqli_real_escape_string($this->object,$string);
 	}
 	public function error(){
+		$code = mysqli_errno($this->object);
+		if($code===0){
+			return false;
+		}
 		return array(
-			'code' => mysqli_error($this->object),
-			'error' => mysqli_errno($this->object)
+			'code' => $code,
+			'error' => mysqli_error($this->object)
 		);
 
 	}
