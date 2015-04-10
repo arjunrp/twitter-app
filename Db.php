@@ -26,11 +26,12 @@ class DB{
 		);
 
 	}
-	public function addNewUser($userid,$username,$token,$secret){
-		return mysqli_query($this->object,"INSERT INTO twitter_user(userid,username,oauth_token,oauth_secret)
+	public function addNewUser($userid,$username,$name,$token,$secret){
+		return mysqli_query($this->object,"INSERT INTO twitter_user(userid,username,name,email,oauth_token,oauth_secret)
 			VALUES(
 				'".$this->escape($userid)."',
 				'".$this->escape($username)."',
+				'".$this->escape($name)."',
 				'',
 				'".$this->escape($token)."',
 				'".$this->escape($secret)."')
