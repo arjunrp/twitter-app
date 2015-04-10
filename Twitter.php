@@ -31,6 +31,34 @@ class Twitter{
 	}
 
 
+	public function getFriends($count=10,$cursor=-1){
+		$friends = $this->connection->get('friends/list',array(
+			'count'=>$count,
+			'cursor'=>$cursor,
+			'skip_status'=>true,
+			'include_user_entities'=>false));
+
+		$return = array();
+		if($this->connection->getLastHttpCode()===200){
+			$return['users']=array();
+			$return['next_cursor'] = $friends->next_cursor_str;
+			$return['prev_cursor'] = $friends->previous_cursor_str;
+			foreach($friends->users as $friend){
+				array_push($return['users'],array(
+						'id'=>$friend->id_str,
+						'name'=>$friend->name,
+						'screen_name'=>$friend->screen_name,
+						'image'=>$friend->profile_image_url
+					));
+			}
+			return $return;
+		}
+		else{
+			return false;
+		}
+
+	}
+
 	public function getUserInfo(){
 		$details = $this->connection->get('account/verify_credentials');
 		if($this->connection->getLastHttpCode()===200){
