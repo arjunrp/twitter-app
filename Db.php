@@ -31,6 +31,7 @@ class DB{
 			VALUES(
 				'".$this->escape($userid)."',
 				'".$this->escape($username)."',
+				'',
 				'".$this->escape($token)."',
 				'".$this->escape($secret)."')
 			ON DUPLICATE KEY UPDATE
