@@ -28,23 +28,24 @@ class Twitter{
 											 $this->oauth_token_secret
 											);
 
-		return $this->connection;
 	}
 
 
 	public function getUserInfo(){
 		$details = $this->connection->get('account/verify_credentials');
+		if($this->connection->getLastHttpCode()===200){
+			return array(
+				'userid'=>$details->id_str,
+				'screen_name'=>$details->screen_name,
+				'name'=>$details->name,
+				'location'=>$details->location,
+				'friends'=>$details->friends_count,
+				'image'=>$details->profile_image_url,
+			);
 
-		$return = array(
-			'userid'=>$details->id_str,
-			'screen_name'=>$details->screen_name,
-			'name'=>$details->name,
-			'location'=>$details->location,
-			'friends'=>$details->friends_count,
-			'image'=>$details->profile_image_url,
-		);
-		return $return;
-
+		}
+		else
+			return false;
 	}
 	public function getUserToken($oauth_verifier){
 		/*
@@ -68,12 +69,19 @@ class Twitter{
 					oauth_token_secret
 					oauth_callback_confirmed
 		*/
-		return $this->connection->oauth('oauth/request_token',array('oauth_callback'=>self::$callback_url));
+		$token = $this->connection->oauth('oauth/request_token',array('oauth_callback'=>self::$callback_url));
+		if($this->connection->getLastHttpCode()===200){
+			return $token;
+		}
+		else
+			return false;
+
 	}
 	public function authorize(){
 		/*
 			Returns the url where the user should be forwarded.
 		*/
-		return $this->connection->url('oauth/authorize', array('oauth_token' => $this->oauth_token));
+		$url = $this->connection->url('oauth/authorize', array('oauth_token' => $this->oauth_token));
+		return $url;
 	}
 }
