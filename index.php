@@ -1,11 +1,26 @@
 <?php
 
 session_start();
+require('essentials.php');
+
+
+var_dump($_SESSION);
+
+if(checkSession()===true){
+	header('Location: home.php');
+	die();
+}
 require('constants.php');
 require('Twitter.php');
 
 $connection = new Twitter();
 $url = $connection->authorize();
-$_SESSION['oauth_token'] = $connection->oauth_token;
-$_SESSION['oauth_token_secret'] = $connection->oauth_token_secret;
+if($url===false){
+	var_dump($url);
+	die('error');
+
+}
+$_SESSION['token'] = $connection->oauth_token;
+$_SESSION['secret'] = $connection->oauth_token_secret;
 header('Location:'.$url);
+die();
