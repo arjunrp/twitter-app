@@ -31,6 +31,41 @@ class Twitter{
 	}
 
 
+	public function getNewTweets($user,$lastTweet){
+		$tweets = $this->connection->get('statuses/user_timeline',array(
+					'user_id'=>$user,
+					'trim_user'=>false,
+					'since_id'=>$lastTweet,
+					'include_rts'=>false,
+					'exclude_replies'=>true
+		));
+		if($this->connection->getLastHttpCode()!==200){
+			return false;
+		}
+		$result = $tmp = array();
+		foreach($tweets as $tweet){
+			$tmp['username'] = $tweet->user->name;
+			$tmp['screenname'] = $tweet->user->screen_name;
+			$tmp['id'] = $tweet->id_str;
+			$tmp['text'] = $tweet->text;
+			$tmp['time'] = date('Y-m-d H:i:s',strtotime($tweet->created_at));
+			array_push($result,$tmp);
+		}
+		return $result;
+	}
+
+
+
+	public function getLastTweet($user){
+		$tweets = $this->connection->get('statuses/user_timeline',array(
+					'count'=>'1',
+					'user_id'=>$user,
+					'trim_user'=>true,
+					'include_rts'=>false,
+					'exclude_replies'=>true
+		));
+		return $tweets[0]->id_str;
+	}
 	public function getFriends($count=10,$cursor=-1){
 		$friends = $this->connection->get('friends/list',array(
 			'count'=>$count,
@@ -58,7 +93,6 @@ class Twitter{
 		}
 
 	}
-
 	public function getUserInfo(){
 		$details = $this->connection->get('account/verify_credentials');
 		if($this->connection->getLastHttpCode()===200){
