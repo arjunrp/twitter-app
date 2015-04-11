@@ -13,3 +13,9 @@ function checkSession(){
 	}
 	return false;
 }
+
+function sendMail($to,$subject,$message){
+
+
+
+}
