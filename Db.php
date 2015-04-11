@@ -48,13 +48,25 @@ class DB{
 		return $row;
 	}
 
+
+	public function getFollowing(){
+		$res = mysqli_query($this->object,"SELECT user,following,last_tweet FROM twitter_following ORDER BY user");
+		if($res==false){
+			return false;
+		}
+		$result=array();
+		while($r = mysqli_fetch_assoc($res)){
+			array_push($result,$r);
+		}
+		return $result;
+	}
+
 	public function follow($appuser,$user,$lastTweet){
 		return mysqli_query($this->object,"INSERT INTO twitter_following VALUES(
 										'".$this->escape($appuser)."',
 										'".$this->escape($user)."',
 										'".$this->escape($lastTweet)."')");
 	}
-
 	public function unFollow($appuser,$user){
 		return mysqli_query($this->object,"DELETE FROM twitter_following WHERE
 										user = '".$this->escape($appuser)."'
