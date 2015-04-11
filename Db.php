@@ -48,9 +48,11 @@ class DB{
 		return $row;
 	}
 
-	public function follow($appuser,$user){
+	public function follow($appuser,$user,$lastTweet){
 		return mysqli_query($this->object,"INSERT INTO twitter_following VALUES(
-										'".$this->escape($appuser)."','".$this->escape($user)."')");
+										'".$this->escape($appuser)."',
+										'".$this->escape($user)."',
+										'".$this->escape($lastTweet)."')");
 	}
 
 	public function unFollow($appuser,$user){

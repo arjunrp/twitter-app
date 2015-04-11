@@ -84,8 +84,7 @@ switch($id){
 			$response['email'] = true;
 			break;
 		}
-
-		if(($db->follow($_SESSION['userid'],$user))===false){
+		if(($db->follow($_SESSION['userid'],$user,$twitter->getLastTweet($user)))===false){
 			$response['message'] = 'DB Error,Please try again';
 			break;
 		}
