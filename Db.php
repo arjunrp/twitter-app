@@ -39,6 +39,21 @@ class DB{
 			oauth_token=VALUES(oauth_token),
 			oauth_secret=VALUES(oauth_secret)");
 	}
+	public function getEmail($userid){
+		$res = mysqli_query($this->object,"SELECT email FROM twitter_user WHERE userid='".$this->escape($userid)."'");
+		if(!$res){
+			return false;
+		}
+		$row = mysqli_fetch_row($res);
+		return $row[0];
+	}
+	public function updateEmail($email,$userid){
+		return mysqli_query($this->object,"UPDATE twitter_user
+							SET email = '".$this->escape($email)."'
+							WHERE userid = '".$this->escape($userid)."'");
+
+
+	}
 	public function isOk(){
 		if($this->object){
 			return true;
