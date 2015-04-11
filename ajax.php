@@ -51,7 +51,7 @@ switch($id){
 	case 2:{
 		/* Load more following users */
 
-		$friends = $twitter->getFriends(6,$_SESSION['next_cursor']);
+		$friends = $twitter->getFriends(30,$_SESSION['next_cursor']);
 		if($friends===false){
 			$response['message'] = 'API Error while fetching details';
 			break;
