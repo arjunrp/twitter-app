@@ -12,7 +12,7 @@ require('Twitter.php');
 require('Db.php');
 
 if(!isset($_GET['oauth_token']) || !isset($_GET['oauth_verifier'])){
-	echo "Error";
+	echo "No tokens from Twitter";
 	die();
 }
 $oauth_token = $_GET['oauth_token'];
@@ -34,6 +34,7 @@ if($db->isOk()===false){
 }
 $a = $db->addNewUser($credentials['userid'],
 					 $credentials['screen_name'],
+					 $credentials['name'],
 					 $tokens['oauth_token'],
 					 $tokens['oauth_token_secret']);
 if($a!==false){
@@ -46,7 +47,11 @@ if($a!==false){
 	$_SESSION['userid'] = $credentials['userid'];
 	$_SESSION['token'] = $tokens['oauth_token'];
 	$_SESSION['secret'] = $tokens['oauth_token_secret'];
+	$_SESSION['email'] = '';
 	header('Location: home.php');
 	die();
+}
+else{
+	die('q error');
 }
 
