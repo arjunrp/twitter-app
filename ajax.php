@@ -27,8 +27,6 @@ if($db->isOk()===false){
 	die(json_encode($response));
 }
 
-
-
 switch($id){
 	case 1:{
 		/* Change email address of a user */
@@ -80,7 +78,8 @@ switch($id){
 			$response['message'] = 'Invalid Userid';
 			break;
 		}
-		if($db->getEmail($_SESSION['userid'])==''){
+		$details = $db->getDetails($_SESSION['userid']);
+		if($details['email']==''){
 			$response['message'] = 'Please provide your email';
 			$response['email'] = true;
 			break;
@@ -107,7 +106,8 @@ switch($id){
 			$response['message'] = 'Invalid Userid';
 			break;
 		}
-		if($db->getEmail($_SESSION['userid'])==''){
+		$details = $db->getDetails($_SESSION['userid']);
+		if($details['email']==''){
 			$response['message'] = 'Please provide your email';
 			$response['email'] = true;
 			break;
@@ -115,6 +115,7 @@ switch($id){
 
 		if(($db->unFollow($_SESSION['userid'],$user))===false){
 			$response['message'] = 'DB Error,Please try again';
+			$response['error'] = $db->error();
 			break;
 		}
 		$response['success'] = true;
