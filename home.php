@@ -16,9 +16,17 @@ $db = new Db();
 if($db->isOk()===false){
 	die('Cannot Connect to DB');
 }
-$email = $db->getEmail($_SESSION['userid']);
-$credentials = $twitter->getUserInfo();
+$details = $db->getDetails($_SESSION['userid']);
+if($details===null){
+	header('Location: index.php?action=logout');
+	die();
+}
+$email = $details['email'];
 
+$credentials = $twitter->getUserInfo();
+if($credentials==false){
+	die('Cannot connect to twitter,Code: '.$twitter->getHTTPCode());
+}
 
 ?>
 <!DOCTYPE html>
@@ -62,17 +70,6 @@ $credentials = $twitter->getUserInfo();
   			</div>
 		</div>
 
-		<div class="dropdown">
-  			<button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown">
-				<span class="glyphicon glyphicon-cog"></span>
-			</button>
-
-			<ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
-    			<li role="presentation"><a role="menuitem" tabindex="-1" data-toggle="modal" data-target="#emailModal" href="#">Change Email Address</a></li>
-    			<li role="presentation"><a role="menuitem" tabindex="-1" href="index.php?action=logout">Logout</a></li>
-  			</ul>
-		</div>
-
 		<div class="content">
 
 			<div class="container">
@@ -103,8 +100,9 @@ $credentials = $twitter->getUserInfo();
 				</div>
 
 				<div class="row">
-					<div class="col-md-6 col-md-offset-3">
-
+					<div style="text-align:center;" class="col-md-12">
+						<button data-toggle="modal" data-target="#emailModal" class="gear btn btn-primary">Email address</button>
+						<a href="index.php?action=logout" class="btn btn-primary gear">Logout</a>
 					</div>
 				</div>
 
@@ -201,7 +199,8 @@ $credentials = $twitter->getUserInfo();
 				load();
 
 
-				$('#users').on('click','.user-follow',function(){
+				$('#users').on('click','.user-follow',function(e){
+					e.preventDefault();
 					var id=3,
 						userid = $(this).data("userid"),
 						status = $(this).data("status");
@@ -220,14 +219,14 @@ $credentials = $twitter->getUserInfo();
 								if(data.success===true){
 									if(id==4){
 										$(element)
-											.data("status",'following')
+											.data("status",'')
 											.removeClass('btn-danger')
 											.addClass('btn-primary')
 											.text('Follow via mail');
 									}
 									else{
 										$(element)
-											.data("status",'')
+											.data("status",'following')
 											.removeClass('btn-primary')
 											.addClass('btn-danger')
 											.text('Remove from mail');
@@ -235,6 +234,9 @@ $credentials = $twitter->getUserInfo();
 								}
 								else{
 									alert(data.message);
+									if(data.email){
+										$('#emailModal').modal('show');
+									}
 								}
 							}
 							catch(e){
