@@ -48,6 +48,17 @@ class DB{
 		return $row[0];
 	}
 
+	public function follow($appuser,$user){
+		return mysqli_query($this->object,"INSERT INTO twitter_following VALUES(
+										'".$this->escape($appuser)."','".$this->escape($user)."')");
+	}
+
+	public function unFollow($appuser,$user){
+		return mysqli_query($this->object,"DELETE FROM twitter_following WHERE
+										user = '".$this->escape($appuser)."'
+										AND following = '".$this->escape($user)."'");
+
+	}
 	public function checkFollowers($userid,$users){
 		$str = '';
 		foreach($users as $user){
@@ -62,7 +73,7 @@ class DB{
 		}
 		$result = array();
 		while($r = mysqli_fetch_row($res)){
-			array_push($r[0]);
+			array_push($result,$r[0]);
 		}
 		foreach($users as $key=>$user){
 			if(in_array($user['id'],$result)){
@@ -78,7 +89,6 @@ class DB{
 
 
 	}
-
 	public function updateEmail($email,$userid){
 		return mysqli_query($this->object,"UPDATE twitter_user
 							SET email = '".$this->escape($email)."'

@@ -2,27 +2,24 @@
 session_start();
 require('essentials.php');
 if(checkSession()===false){
-	//header('Location: index.php');
-	//die();
+	header('Location: index.php');
+	die();
 }
 
 require('constants.php');
 require('Twitter.php');
 require('Db.php');
 
-//$twitter = new Twitter($_SESSION['token'],$_SESSION['secret']);
-//$credentials = $twitter->getUserInfo();
-//var_dump($credentials);
+$_SESSION['next_cursor']=-1;
+$twitter = new Twitter($_SESSION['token'],$_SESSION['secret']);
+$db = new Db();
+if($db->isOk()===false){
+	die('Cannot Connect to DB');
+}
+$email = $db->getEmail($_SESSION['userid']);
+$credentials = $twitter->getUserInfo();
 
-//$friends = $twitter->getFriends(2);
-//$_SESSION['next_cursor'] =  $friends['next_cursor'];
 
-//$friends= $friends['users'];
-$credentials = array(
-	'name'=>'arjun',
-	'image'=>'https://pbs.twimg.com/profile_images/533714901802291201/xzGnIg2y_bigger.jpeg',
-	'screen_name'=>'arju_rp'
-);
 ?>
 <!DOCTYPE html>
 <html>
@@ -36,7 +33,10 @@ $credentials = array(
 	</head>
 	<body>
 
-		<div class="loading"></div>
+		<div class="loading">
+			<div class="loading-img">
+			</div>
+		</div>
 
 		<div class="modal fade" id="emailModal">
   			<div class="modal-dialog">
@@ -49,7 +49,7 @@ $credentials = array(
         				<form>
 							<div class="">
 								<label>Email address</label>
-								<input id="email" class="form-control" type="text" placeholder="enter email to receive tweets"/>
+								<input id="email" value="<?php echo $email; ?>" autocomplete="off" class="form-control" type="text" placeholder="enter email to receive tweets"/>
 							</div>
 
 						</form>
@@ -112,14 +112,7 @@ $credentials = array(
 
 			<div id="following" class="container">
 
-				<div class="row center">
-
-					<div class="col-sm-2 user-box">
-						<img class="img-rounded" src="https://pbs.twimg.com/profile_images/533714901802291201/xzGnIg2y_bigger.jpeg" alt="profile-img" /><br/>
-						<a class="user-link" href="https://twitter.com/arju_rp">@arjun_rp</a>
-						<p class="user-name" >Arjun RP</p>
-						<a href="#" class="user-follow btn btn-primary">Follow via mail</a>
-					</div>
+				<div id="users" class="row center">
 
 				</div>
 				<div class="row">
@@ -129,8 +122,6 @@ $credentials = array(
 				</div>
 
 			</div>
-
-
 		</div>
 
 
@@ -138,14 +129,139 @@ $credentials = array(
 		<script src="plugins/js/bootstrap.min.js"></script>
 		<script>
 			$(document).ready(function(){
-				$('.loading').css('display','none');
+				function createUser(screen,name,id,image,following){
+					if(following===true){
+						css = 'btn-danger';
+						following = 'following';
+						text = 'Remove from mail';
+					}
+					else{
+						css = 'btn-primary';
+						following = '';
+						text = 'Follow via mail';
 
+					}
+
+					var html = '<div class="col-sm-2 user-box">\
+						<img class="img-rounded"\ src="'+image+'" alt="" /><br/>\
+						<a class="user-link" href="https://twitter.com/'+screen+'">'+screen+'</a>\
+						<p class="user-name" >'+name+'</p>\
+						<a href="#" data-userid="'+id+'" data-status="'+following+'" class="user-follow btn '+css+'">'+text+'</a>\
+					</div>';
+
+					return html;
+				}
+
+				function load(){
+					$('.loading').css('display','block');
+					$.ajax({
+						type:'post',
+						url:'ajax.php',
+						data:'id=2',
+						success:function(data){
+							try{
+								data = JSON.parse(data);
+								if(data.success===true){
+									var following = $('#users');
+
+									if(data.cursor==='0'){
+										$('#show-more').text('No more users').removeClass('btn-success').addClass('btn-danger').attr('disabled',true);
+									}
+
+									user = data.message;
+									for(i in user){
+										html = createUser(user[i]['screen_name'],
+														 user[i]['name'],
+														 user[i]['id'],
+														 user[i]['image'],
+														 user[i]['following']);
+										following.append(html);
+									}
+									$("html, body").animate({ scrollTop: $(document).height() }, 1000);
+								}
+								else{
+									alert(data.message);
+
+								}
+							}
+							catch(e){
+								alert('Invalid Response From Server');
+								console.log(e);
+							}
+							$('.loading').css('display','none');
+
+						},
+						error:function(){
+							alert('Cannot connect to server');
+							$('.loading').css('display','none');
+						}
+					});
+				}
+
+				load();
+
+
+				$('#users').on('click','.user-follow',function(){
+					var id=3,
+						userid = $(this).data("userid"),
+						status = $(this).data("status");
+
+					if(status=='following'){
+						id=4;
+					}
+					element = this;
+					$.ajax({
+						url:'ajax.php',
+						data:'id='+id+"&userid="+userid,
+						type:'post',
+						success:function(data){
+							try{
+								data = JSON.parse(data);
+								if(data.success===true){
+									if(id==4){
+										$(element)
+											.data("status",'following')
+											.removeClass('btn-danger')
+											.addClass('btn-primary')
+											.text('Follow via mail');
+									}
+									else{
+										$(element)
+											.data("status",'')
+											.removeClass('btn-primary')
+											.addClass('btn-danger')
+											.text('Remove from mail');
+									}
+								}
+								else{
+									alert(data.message);
+								}
+							}
+							catch(e){
+								alert('Invalid Response From Server');
+								console.log(e);
+							}
+							$('.loading').css('display','none');
+
+						},
+						error:function(){
+							alert('Cannot connect to server');
+							$('.loading').css('display','none');
+						}
+
+					});
+
+				})
+				$('#show-more').click(function(){
+					load();
+				});
 				$('#changeEmail').click(function(){
 					var email = $('#email').val();
 					if(email===''){
 						alert('Please enter your mail address');
 						return;
 					}
+					$('.loading').css('display','block');
 					$.ajax({
 						type:'post',
 						url:'ajax.php',
@@ -154,19 +270,24 @@ $credentials = array(
 							try{
 								data = JSON.parse(data);
 								if(data.success===true){
-
+									$('#emailModal').modal('hide');
 								}
 								else{
-									alert(data.error);
+									alert(data.message);
+
 								}
 							}
 							catch(e){
 								alert('Invalid Response From Server');
 							}
+							$('.loading').css('display','none');
 
 						},
-						error:function(){}
-					})
+						error:function(){
+							alert('Cannot connect to server');
+							$('.loading').css('display','none');
+						}
+					});
 				});
 
 

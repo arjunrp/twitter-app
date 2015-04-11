@@ -53,7 +53,7 @@ switch($id){
 	case 2:{
 		/* Load more following users */
 
-		$friends = $twitter->getFriends(20,$_SESSION['next_cursor']);
+		$friends = $twitter->getFriends(6,$_SESSION['next_cursor']);
 		if($friends===false){
 			$response['message'] = 'API Error while fetching details';
 			break;
@@ -71,10 +71,55 @@ switch($id){
 	}
 	case 3:{
 		/* Follow(add mail) a person */
+		if(!isset($_POST['userid'])){
+			$response['message'] = 'No userid';
+			break;
+		}
+		$user = $_POST['userid'];
+		if($user===''){
+			$response['message'] = 'Invalid Userid';
+			break;
+		}
+		if($db->getEmail($_SESSION['userid'])==''){
+			$response['message'] = 'Please provide your email';
+			$response['email'] = true;
+			break;
+		}
+
+		if(($db->follow($_SESSION['userid'],$user))===false){
+			$response['message'] = 'DB Error,Please try again';
+			break;
+		}
+		$response['success'] = true;
+		$response['message'] = 'User updates will be delivered to your mailbox';
+		break;
 
 	}
 	case 4:{
 		/* unFollow(remove mail) a person */
+
+		if(!isset($_POST['userid'])){
+			$response['message'] = 'No userid';
+			break;
+		}
+		$user = $_POST['userid'];
+		if($user===''){
+			$response['message'] = 'Invalid Userid';
+			break;
+		}
+		if($db->getEmail($_SESSION['userid'])==''){
+			$response['message'] = 'Please provide your email';
+			$response['email'] = true;
+			break;
+		}
+
+		if(($db->unFollow($_SESSION['userid'],$user))===false){
+			$response['message'] = 'DB Error,Please try again';
+			break;
+		}
+		$response['success'] = true;
+		$response['message'] = 'Unfollow successfull';
+		break;
 
 	}
 	default:{
