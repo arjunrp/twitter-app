@@ -19,8 +19,8 @@
 		<meta charset='utf-8' />
 		<title>Login :: Twitter - Notify By Mail</title>
 		<meta name="viewport"content="width=device-width,initial-scale=1">
-		<link rel="stylesheet" href="plugins/bootstrap.min.css" />
-		<link rel="stylesheet" href="plugins/mine.css" />
+		<link rel="stylesheet" href="plugins/css/bootstrap.min.css" />
+		<link rel="stylesheet" href="plugins/css/mine.css" />
 		<link href='http://fonts.googleapis.com/css?family=Slabo+27px' rel='stylesheet' type='text/css'>
 	</head>
 	<body>
@@ -42,8 +42,8 @@
 
 
 
-		<script src="plugins/jquery.min.js"></script>
-		<script src="plugins/bootstrap.min.js"></script>
+		<script src="plugins/js/jquery.min.js"></script>
+		<script src="plugins/js/bootstrap.min.js"></script>
 		<script>
 			$(document).ready(function(){
 				$('.loading').css('display','none');
