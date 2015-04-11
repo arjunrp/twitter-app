@@ -10,6 +10,9 @@ body{
 	border-radius: 6px;
 	margin:0px;
 }
+.user-box .btn{
+	width:100%;
+}
 img{
 	height:48px !important;
 	width:48px !important;
@@ -27,18 +30,11 @@ img{
 	margin-bottom: 10px;
 	margin-top: 20px;
 }
-
-.dropdown{
-	position:absolute;
-	top:13%;
-	left:85%;
+.gear{
+	width:20%;
+	min-width: 100px;
+	font-size:16px;
 }
-.dropdown-menu{
-	top:92%;
-	border-radius:3px;
-}
-
-
 
 .btn{
 	border-radius: 2px;
