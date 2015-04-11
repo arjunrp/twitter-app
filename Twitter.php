@@ -112,4 +112,7 @@ class Twitter{
 		$url = $this->connection->url('oauth/authorize', array('oauth_token' => $this->oauth_token));
 		return $url;
 	}
+	public function getHTTPCode(){
+		return $this->connection->getLastHttpCode();
+	}
 }
