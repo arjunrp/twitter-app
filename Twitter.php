@@ -5,6 +5,7 @@ require('twitteroauth/autoload.php');
 use Abraham\TwitterOAuth\TwitterOAuth;
 
 class Twitter{
+	//private static $callback_url = 'http://maxxtechdistribution.com/twitter/callback.php';
 	private static $callback_url = 'http://localhost/twitter/callback.php';
 
 	public $connection;
