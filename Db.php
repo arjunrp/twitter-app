@@ -47,6 +47,38 @@ class DB{
 		$row = mysqli_fetch_row($res);
 		return $row[0];
 	}
+
+	public function checkFollowers($userid,$users){
+		$str = '';
+		foreach($users as $user){
+			$str .= "'".$this->escape($user['id'])."',";
+		}
+		$str = trim($str,',');
+		$res = mysqli_query($this->object,"SELECT following FROM twitter_following
+							WHERE user='".$this->escape($userid)."' AND following IN(".$str.") ");
+
+		if($res==false){
+			return false;
+		}
+		$result = array();
+		while($r = mysqli_fetch_row($res)){
+			array_push($r[0]);
+		}
+		foreach($users as $key=>$user){
+			if(in_array($user['id'],$result)){
+				$users[$key]['following']=true;
+			}
+			else{
+				$users[$key]['following']=false;
+			}
+		}
+		return $users;
+
+
+
+
+	}
+
 	public function updateEmail($email,$userid){
 		return mysqli_query($this->object,"UPDATE twitter_user
 							SET email = '".$this->escape($email)."'
