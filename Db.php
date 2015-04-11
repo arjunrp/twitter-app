@@ -39,13 +39,13 @@ class DB{
 			oauth_token=VALUES(oauth_token),
 			oauth_secret=VALUES(oauth_secret)");
 	}
-	public function getEmail($userid){
-		$res = mysqli_query($this->object,"SELECT email FROM twitter_user WHERE userid='".$this->escape($userid)."'");
+	public function getDetails($userid){
+		$res = mysqli_query($this->object,"SELECT email,userid,username,name,oauth_token AS token,oauth_secret AS secret FROM twitter_user WHERE userid='".$this->escape($userid)."'");
 		if(!$res){
 			return false;
 		}
-		$row = mysqli_fetch_row($res);
-		return $row[0];
+		$row = mysqli_fetch_assoc($res);
+		return $row;
 	}
 
 	public function follow($appuser,$user){
