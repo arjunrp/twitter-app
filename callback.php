@@ -11,22 +11,28 @@ require('constants.php');
 require('Twitter.php');
 require('Db.php');
 
-if(!isset($_GET['oauth_token']) || !isset($_GET['oauth_verifier'])){
-	echo "No tokens from Twitter";
-	die();
+if(isset($_GET['denied'])){
+	die("User did not authorize");
 }
+
+if(!isset($_GET['oauth_token']) || !isset($_GET['oauth_verifier'])){
+	die("No tokens from Twitter");
+
+}
+
 $oauth_token = $_GET['oauth_token'];
 $oauth_verifier = $_GET['oauth_verifier'];
 
 $twitter = new Twitter($_SESSION['token'],$_SESSION['secret']);
 $tokens = $twitter->getUserToken($oauth_verifier);
+if($tokens===false){
+	die('API Error,Code'.$twitter->getHTTPCode());
+}
 $twitter = new Twitter($tokens['oauth_token'],$tokens['oauth_token_secret']);
-
-
-
 $credentials = $twitter->getUserInfo();
+
 if($credentials===false){
-	die('error');
+	die('API Error,Code'.$twitter->getHTTPCode());
 }
 $db = new Db();
 if($db->isOk()===false){
