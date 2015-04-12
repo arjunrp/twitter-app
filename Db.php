@@ -1,5 +1,24 @@
 <?php
 /* Class to perform all DB relatedoperations */
+/*
+	Table Structure
+
+	==================================================================
+	|                        twitter_user                            |
+	==================================================================
+	| userid | username | name | email | oauth_token | oauth_secret  |
+	==================================================================
+
+
+	==================================
+	|      twitter_following         |
+	==================================
+	| user | following | last_tweet  |
+	==================================
+
+*/
+
+
 
 class DB{
 	private $object;
