@@ -47,7 +47,7 @@ function createMessage($tomail){
 		else{
 			foreach($user as $tweet){
 				$str .= '<div>';
-				$str .= '<span><a href="https://twitter.com/'.$tweet['screenname'].'" target="_blank">@'.$tweet['screenname'].'</a></span>&nbsp&nbsp';
+				$str .= '<span><a href="https://twitter.com/'.$tweet['screenname'].'" target="_blank">@'.$tweet['screenname'].'</a></span>&nbsp;&nbsp;&nbsp;&nbsp;';
 				$str .= '<span>'.$tweet['time'].'</span>';
 				$str .= '<p>'.htmlentities($tweet['text']).'</p>';
 				$str .= '</div>';
@@ -61,9 +61,11 @@ function createMessage($tomail){
 /* Send mail to users */
 function sendMail($to,$message){
 	//return true;
-	$headers = 'MIME-Version: 1.0\r\n';
-	$headers .= 'MIME-Version: 1.0\r\n';
-	$headers .= 'Content-Type: text/html; charset=ISO-8859-1\r\n';
+	$headers = "MIME-Version: 1.0\r\n";
+	$headers .= "MIME-Version: 1.0\r\n";
+	$headers .= "Content-Type: text/html; charset=ISO-8859-1\r\n";
+
+
 	return mail($to,'Mail My Follower - Twitter Application',$message,$headers);
 
 }
