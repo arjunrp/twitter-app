@@ -1,6 +1,6 @@
 #A Simple Twitter Application
 
-A ver simple twitter application to
+A very simple Twitter application
    - Sign-in using twitter
    - Post  a tweet to users timeline
    - Fetch user tweets and basic account information
