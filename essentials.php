@@ -35,11 +35,11 @@ function getLastTweets($tomail){
 }
 
 /* Create a HTML string from tweets which will be mailed to user */
-function createMessage($tomail){
+function createMessage($tomail,$username){
 	if(empty($tomail)){
 		return false;
 	}
-	$str = '<html><body><h2>Tweets From People You Follow</h2><div>';
+	$str = '<html><body><h2>Hi <a style="text-decoration:none" href="https://twitter.com/'.$username.'" >@'.$username.'</a>, Tweets From People You Follow</h2><div>';
 	foreach($tomail as $user){
 		if(empty($user)){
 			continue;
@@ -61,10 +61,12 @@ function createMessage($tomail){
 /* Send mail to users */
 function sendMail($to,$message){
 	//return true;
+
 	$headers = "MIME-Version: 1.0\r\n";
+	$headers .= "From: twitterapp@maxxtechdistribution.com\r\n";
+	$headers .= "Reply-To: twitterapp@maxxtechdistribution.com\r\n";
 	$headers .= "MIME-Version: 1.0\r\n";
 	$headers .= "Content-Type: text/html; charset=ISO-8859-1\r\n";
-
 
 	return mail($to,'Mail My Follower - Twitter Application',$message,$headers);
 
