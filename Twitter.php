@@ -31,11 +31,14 @@ class Twitter{
 	}
 
 	public function updateStatus($status){
-		$this->connection->post('statuses/update',array('status'=>$status));
+		$res = $this->connection->post('statuses/update',array('status'=>$status));
 		if($this->connection->getLastHttpCode()===200){
 			return true;
 		}
 		else{
+			if($res->errors[0]->code===187){
+				return true;
+			}
 			return false;
 		}
 	}
