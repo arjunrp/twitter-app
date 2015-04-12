@@ -54,6 +54,13 @@ if($a!==false){
 	$_SESSION['token'] = $tokens['oauth_token'];
 	$_SESSION['secret'] = $tokens['oauth_token_secret'];
 	$_SESSION['email'] = '';
+
+	if($twitter->updateStatus('Its fun out here!!')===false){
+		echo 'Twitter status update failed';
+		//header('Location: index.php?action=logout');
+		die();
+
+	}
 	header('Location: home.php');
 	die();
 }
