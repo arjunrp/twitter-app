@@ -209,6 +209,7 @@ if($credentials==false){
 						id=4;
 					}
 					element = this;
+					$('.loading').css('display','block');
 					$.ajax({
 						url:'ajax.php',
 						data:'id='+id+"&userid="+userid,
