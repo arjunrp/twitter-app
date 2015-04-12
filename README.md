@@ -21,3 +21,8 @@ Twitter have an excellent real time [streaming API], it can have 3 types of usag
 As of now, the 'site stream' API is available only upon special request. The same application can be done via the site stream API to deliver tweets more real time.
  
 Thanks a lot to [PHP Twitter Library] !!!
+
+[PHP Twitter Library]:https://github.com/abraham/twitteroauth
+[tweets.php]:https://github.com/arjunrp/twitter-app/blob/master/tweets.php
+[streaming API]:https://dev.twitter.com/streaming/overview
+[special request]:https://dev.twitter.com/streaming/sitestreams
