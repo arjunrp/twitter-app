@@ -15,11 +15,10 @@ class Twitter{
 
 	function __construct($oauth_token='',$oauth_token_secret=''){
 		if($oauth_token===''){
-
 			$tmp = new TwitterOAuth(TWITTER_KEY,TWITTER_SECRET);
 			$tokens = $tmp->oauth('oauth/request_token',array('oauth_callback'=>self::$callback_url));
-			$oauth_token=$tokens['oauth_token'];
-			$oauth_token_secret=$tokens['oauth_token_secret'];
+   			$oauth_token=$tokens['oauth_token'];
+   			$oauth_token_secret=$tokens['oauth_token_secret'];
 		}
 		$this->oauth_token = $oauth_token;
 		$this->oauth_token_secret = $oauth_token_secret;
@@ -31,6 +30,15 @@ class Twitter{
 
 	}
 
+	public function updateStatus($status){
+		$this->connection->post('statuses/update',array('status'=>$status));
+		if($this->connection->getLastHttpCode()===200){
+			return true;
+		}
+		else{
+			return false;
+		}
+	}
 
 	public function getNewTweets($user,$lastTweet){
 		$tweets = $this->connection->get('statuses/user_timeline',array(
@@ -45,8 +53,10 @@ class Twitter{
 		}
 		$result = $tmp = array();
 		foreach($tweets as $tweet){
+
 			$tmp['username'] = $tweet->user->name;
 			$tmp['screenname'] = $tweet->user->screen_name;
+			$tmp['userid'] = $tweet->user->id_str;
 			$tmp['id'] = $tweet->id_str;
 			$tmp['text'] = $tweet->text;
 			$tmp['time'] = date('Y-m-d H:i:s',strtotime($tweet->created_at));
@@ -54,8 +64,6 @@ class Twitter{
 		}
 		return $result;
 	}
-
-
 
 	public function getLastTweet($user){
 		$tweets = $this->connection->get('statuses/user_timeline',array(
