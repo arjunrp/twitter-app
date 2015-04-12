@@ -1,4 +1,6 @@
 <?php
+/* Class to perform all DB relatedoperations */
+
 class DB{
 	private $object;
 	public function __construct(){
@@ -15,6 +17,7 @@ class DB{
 	public function escape($string){
 		return mysqli_real_escape_string($this->object,$string);
 	}
+
 	public function error(){
 		$code = mysqli_errno($this->object);
 		if($code===0){
@@ -26,6 +29,7 @@ class DB{
 		);
 
 	}
+
 	public function addNewUser($userid,$username,$name,$token,$secret){
 		return mysqli_query($this->object,"INSERT INTO twitter_user(userid,username,name,email,oauth_token,oauth_secret)
 			VALUES(
@@ -39,6 +43,7 @@ class DB{
 			oauth_token=VALUES(oauth_token),
 			oauth_secret=VALUES(oauth_secret)");
 	}
+
 	public function getDetails($userid){
 		$res = mysqli_query($this->object,"SELECT email,userid,username,name,oauth_token AS token,oauth_secret AS secret FROM twitter_user WHERE userid='".$this->escape($userid)."'");
 		if(!$res){
@@ -48,6 +53,13 @@ class DB{
 		return $row;
 	}
 
+	public function setLasttweet($user,$follower,$tweet){
+		return mysqli_query($this->object,"UPDATE twitter_following SET last_tweet = '".$this->escape($tweet)."' WHERE
+											user='".$this->escape($user)."' AND
+											following='".$this->escape($follower)."'");
+
+
+	}
 
 	public function getFollowing(){
 		$res = mysqli_query($this->object,"SELECT user,following,last_tweet FROM twitter_following ORDER BY user");
@@ -67,12 +79,14 @@ class DB{
 										'".$this->escape($user)."',
 										'".$this->escape($lastTweet)."')");
 	}
+
 	public function unFollow($appuser,$user){
 		return mysqli_query($this->object,"DELETE FROM twitter_following WHERE
 										user = '".$this->escape($appuser)."'
 										AND following = '".$this->escape($user)."'");
 
 	}
+
 	public function checkFollowers($userid,$users){
 		$str = '';
 		foreach($users as $user){
@@ -103,6 +117,7 @@ class DB{
 
 
 	}
+
 	public function updateEmail($email,$userid){
 		return mysqli_query($this->object,"UPDATE twitter_user
 							SET email = '".$this->escape($email)."'
@@ -110,6 +125,7 @@ class DB{
 
 
 	}
+
 	public function isOk(){
 		if($this->object){
 			return true;
@@ -118,6 +134,7 @@ class DB{
 			return false;
 		}
 	}
+
 	public function __destruct(){
 		if($this->object!==false){
 			mysqli_close($this->object);
